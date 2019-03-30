@@ -24,7 +24,8 @@
       run = _ => {
         for (var i=0; i<meshes.length; i++) {
           var three_mesh = meshToThreejs(meshes[i], mat)
-          console.log(three_mesh)
+          three_mesh.visible = true
+          //console.log(three_mesh)
           var entity = document.querySelector('a-entity');
           var name = "mesh_" + i
           entity.setObject3D(name, three_mesh);
