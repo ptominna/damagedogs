@@ -6,6 +6,11 @@
   </head>
 
   <body style='margin : 0px; overflow: hidden;'>
+    <div style='position: fixed; top: 10px; width:100%; text-align: center; z-index: 1;'>
+      <button>
+       show/hide
+      </button>
+    </div>
     <a-scene embedded arjs='sourceType: webcam;'>
         <a-marker preset='hiro'>
           <a-entity></a-entity>
@@ -73,6 +78,14 @@
       }
 
       run()
+
+      document.querySelector("button").addEventListener("click", (e)=> {
+        var entity = document.querySelector('a-entity');
+        var name = "mesh_0"
+        var mesh = entity.getObject3D(name)
+        mesh.visible = !mesh.visible
+        entity.setObject3D(name, mesh)
+      })
 
     </script>
   </body>
