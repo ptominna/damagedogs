@@ -17,6 +17,7 @@
             }
         });
     </script>
+    <!-- <script src="data_beam.js"></script> -->
     <!-- Prevent touch causing flicker on iOS. -->
     <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>
 </head>
@@ -45,6 +46,27 @@
             fox = document.querySelector('#fox');
             idleAnimation = 'Fox_Idle';
             walkAnimation = 'Fox_Run';
+
+            load()
+        }
+
+        load = _ => {
+          var xobj = new XMLHttpRequest();
+          xobj.overrideMimeType("application/json");
+          xobj.open('GET', 'beam_data.json', true);
+          xobj.onreadystatechange = function () {
+            if (xobj.readyState == 4 && xobj.status == "200") {
+              // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+              data = JSON.parse(xobj.responseText)
+              // meshes = data
+              // run()
+              let three_mesh = meshToThreejs(data, 1)
+              let name = "mesh_0"
+              let entity = document.querySelector('#walker');
+              entity.setObject3D(name, three_mesh);
+            }
+          };
+          xobj.send(null);
         }
 
 
@@ -111,6 +133,51 @@
             });
         }
 
+        /* */
+
+        meshToThreejs = (mesh, scale) => {
+          var geometry = new THREE.BufferGeometry();
+          var vertices = mesh.vertices;
+          var vertexbuffer = new Float32Array(3 * vertices.length);
+          for( var i=0; i<vertices.length; i++) {
+            pt = vertices[i];
+            vertexbuffer[i*3] = pt[0];
+            vertexbuffer[i*3+1] = pt[1];
+            vertexbuffer[i*3+2] = pt[2];
+          }
+          // itemSize = 3 because there are 3 values (components) per vertex
+          geometry.addAttribute( 'position', new THREE.BufferAttribute( vertexbuffer, 3 ) );
+          indices = [];
+          var faces = mesh.faces;
+          for( var i=0; i<faces.length; i++) {
+            face = faces[i];
+            indices.push(face[0], face[1], face[2]);
+          }
+          geometry.setIndex(indices);
+          var normals = mesh.normals;
+          var normalBuffer = new Float32Array(3*normals.length);
+          for( var i=0; i<normals.length; i++) {
+            pt = normals[i];
+            normalBuffer[i*3] = pt[0];
+            normalBuffer[i*3+1] = pt[1];
+            normalBuffer[i*3+2] = pt[2];
+          }
+          geometry.addAttribute( 'normal', new THREE.BufferAttribute( normalBuffer, 3 ) );
+          var colors = mesh.colors;
+          var colorBuffer = new Uint8Array(3*colors.length);
+          for( var i=0; i<colors.length; i++) {
+            pt = colors[i];
+            colorBuffer[i*3] = pt[0];
+            colorBuffer[i*3+1] = pt[1];
+            colorBuffer[i*3+2] = pt[2];
+          }
+          geometry.addAttribute( 'color', new THREE.BufferAttribute( colorBuffer, 3, true ) ); // true = normalize
+          var mat = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors, side: THREE.DoubleSide , opacity: 0.7 });
+
+          geometry.scale(scale, scale, scale)
+
+          return new THREE.Mesh(geometry, mat);
+        }
 
         scene.addEventListener('loaded', onceSceneLoaded);
     </script>
