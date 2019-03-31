@@ -31,7 +31,6 @@
 
       //var meshes = [data];
 
-      var mat = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors, side: THREE.DoubleSide , opacity: 0.5 });
 
       load = _ => {
         var xobj = new XMLHttpRequest();
@@ -41,30 +40,56 @@
           if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
             data = JSON.parse(xobj.responseText)
-            meshes = [data]
+            meshes = data
             run()
           }
         };
         xobj.send(null);
       }
 
-      run = _ => {
-        for (var i=0; i<meshes.length; i++) {
-          var three_mesh = meshToThreejs(meshes[i], mat)
-          three_mesh.visible = true
-          //console.log(three_mesh)
-          var entity = document.querySelector('a-entity');
-          var name = "mesh_" + i
-          entity.setObject3D(name, three_mesh);
-
-          var geometry = new THREE.EdgesGeometry( three_mesh.geometry );
-          var material = new THREE.LineBasicMaterial( { color: 0xffffff } );
-          var wireframe = new THREE.LineSegments( geometry, material );
-          entity.setObject3D("lines", wireframe);
-        }
+      var t = 0
+      render = _ => {
+        t++
+        setTimeout(() => {
+          requestAnimationFrame(render)
+          let frame = t % meshes.length
+          let entity = document.querySelector('a-entity');
+          for (let i=0; i<meshes.length; i++) {
+            let name = "mesh_" + i
+            let visible = false
+            console.log(i + " / " + t + " / " + frame)
+            if (i === frame) {
+              visible = true
+            }
+            console.log(name + " : " + visible)
+            entity.getObject3D(name).visible = visible
+          }
+        }, 1000 / 3)
       }
 
-      meshToThreejs = (mesh, material) => {
+      run = _ => {
+        for (var i=0; i<meshes.length; i++) {
+          var three_mesh = meshToThreejs(meshes[i], 0.2)
+
+          var entity = document.querySelector('a-entity');
+          var name = "mesh_" + i
+
+          if (i !== 0) {
+            three_mesh.visible = false
+          }
+
+          entity.setObject3D(name, three_mesh);
+
+          //var geometry = new THREE.EdgesGeometry( three_mesh.geometry );
+          //var material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+          //var wireframe = new THREE.LineSegments( geometry, material );
+          //entity.setObject3D("wireframe_" + i, wireframe);
+        }
+
+        render()
+      }
+
+      meshToThreejs = (mesh, scale) => {
         var geometry = new THREE.BufferGeometry();
         var vertices = mesh.vertices;
         var vertexbuffer = new Float32Array(3 * vertices.length);
@@ -101,18 +126,21 @@
           colorBuffer[i*3+2] = pt[2];
         }
         geometry.addAttribute( 'color', new THREE.BufferAttribute( colorBuffer, 3, true ) ); // true = normalize
-        return new THREE.Mesh( geometry, material );
+        var mat = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors, side: THREE.DoubleSide , opacity: 0.7 });
+
+        geometry.scale(scale, scale, scale)
+
+        return new THREE.Mesh(geometry, mat);
       }
 
       //run()
       load()
 
       document.getElementById('show').addEventListener("click", (e)=> {
-        var entity = document.querySelector('a-entity');
-        var name = "mesh_0"
-        var mesh = entity.getObject3D(name)
-        mesh.visible = !mesh.visible
-        entity.setObject3D(name, mesh)
+        let entity = document.querySelector('a-entity');
+        let name = "mesh_0"
+        let visible = entity.getObject3D(name).visible
+        entity.getObject3D(name).visible = !visible
       })
 
       document.getElementById('update').addEventListener("click", (e)=> {
