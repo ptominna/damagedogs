@@ -62,11 +62,21 @@
           for (let i=0; i<meshes.length; i++) {
             let name = "mesh_" + i
             let visible = false
-            console.log(i + " / " + t + " / " + frame)
+            // console.log(i + " / " + t + " / " + frame)
             if (i === frame) {
               visible = true
             }
             console.log(name + " : " + visible)
+            entity.getObject3D(name).visible = visible
+
+            //wireframe
+            name = "wireframe_" + i
+            visible = false
+            // console.log(i + " / " + t + " / " + frame)
+            if (i === frame) {
+              visible = true
+            }
+            // console.log(name + " : " + visible)
             entity.getObject3D(name).visible = visible
           }
         }, 1000 / 3)
@@ -85,10 +95,10 @@
 
           entity.setObject3D(name, three_mesh);
 
-          //var geometry = new THREE.EdgesGeometry( three_mesh.geometry );
-          //var material = new THREE.LineBasicMaterial( { color: 0xffffff } );
-          //var wireframe = new THREE.LineSegments( geometry, material );
-          //entity.setObject3D("wireframe_" + i, wireframe);
+          let geometry = new THREE.EdgesGeometry( three_mesh.geometry );
+          let material = new THREE.LineBasicMaterial( { color: 0x777777 } );
+          let wireframe = new THREE.LineSegments( geometry, material );
+          entity.setObject3D("wireframe_" + i, wireframe);
         }
 
         render()
