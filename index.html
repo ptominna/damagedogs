@@ -56,6 +56,11 @@
           var entity = document.querySelector('a-entity');
           var name = "mesh_" + i
           entity.setObject3D(name, three_mesh);
+
+          var geometry = new THREE.EdgesGeometry( three_mesh.geometry );
+          var material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+          var wireframe = new THREE.LineSegments( geometry, material );
+          entity.setObject3D("lines", wireframe);
         }
       }
 
