@@ -11,12 +11,20 @@
        show/hide
       </button>
     </div>
-    <a-scene embedded arjs='sourceType: webcam;'>
-        <a-marker preset='hiro'>
-          <a-entity></a-entity>
-        </a-marker>
-    <a-entity camera>
-    </a-entity>
+    <!-- Define your 3d scene and enabled ar.js -->
+    <a-scene embedded arjs='trackingMethod: best;'>
+
+      <!-- Create a anchor to attach your augmented reality -->
+      <a-anchor hit-testing-enabled='true'>
+
+        <!-- Add your augmented reality here -->
+        <a-entity></a-entity>
+
+      </a-anchor>
+
+      <!-- Define a camera -->
+      <a-entity camera></a-entity>
+
     </a-scene>
 
     <script>
