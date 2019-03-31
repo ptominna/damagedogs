@@ -18,7 +18,7 @@
         });
     </script>
     <!-- Prevent touch causing flicker on iOS. -->
-    <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>        
+    <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>
 </head>
 
 <body>
@@ -96,14 +96,14 @@
                     const currentPosition = walker.object3D.position;
                     const distance = currentPosition.distanceTo(targetPosition);
                     walker.object3D.lookAt(targetPosition);
-                    fox.setAttribute('animation-mixer', { clip: walkAnimation });
+                    // fox.setAttribute('animation-mixer', { clip: idleAnimation });
                     const animation = document.createElement('a-animation');
                     animation.setAttribute('attribute', 'position');
                     animation.setAttribute('to', stringify(targetPosition));
                     animation.setAttribute('dur', distance * 3000);
                     animation.setAttribute('easing', 'linear');
-                    animation.addEventListener('animationend',
-                        () => fox.setAttribute('animation-mixer', { clip: idleAnimation }));
+                    // animation.addEventListener('animationend',
+                    //     () => fox.setAttribute('animation-mixer', { clip: idleAnimation }));
                     marker.setAttribute('color', 'blue');
                     setTimeout(() => marker.setAttribute('color', 'green'), 350);
                     walker.appendChild(animation);
@@ -111,7 +111,7 @@
             });
         }
 
-           
+
         scene.addEventListener('loaded', onceSceneLoaded);
     </script>
 </body>
