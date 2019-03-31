@@ -35,7 +35,7 @@
       load = _ => {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
-        xobj.open('GET', 'data.json', true);
+        xobj.open('GET', 'boat_animation.json', true);
         xobj.onreadystatechange = function () {
           if (xobj.readyState == 4 && xobj.status == "200") {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -69,7 +69,7 @@
 
       run = _ => {
         for (var i=0; i<meshes.length; i++) {
-          var three_mesh = meshToThreejs(meshes[i], 0.2)
+          var three_mesh = meshToThreejs(meshes[i], 0.5)
 
           var entity = document.querySelector('a-entity');
           var name = "mesh_" + i
